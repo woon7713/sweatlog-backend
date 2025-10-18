@@ -30,6 +30,8 @@ public class PostResponse {
     private Integer reps;
     private UserDto user; //사용자 정보
     private Integer duration;
+    private String memo;
+    private String imageUrl;
 
 
 
@@ -46,6 +48,8 @@ public class PostResponse {
                 .reps(post.getReps())
                 .duration(post.getDuration())
                 .user(UserDto.from(post.getUser()))
+                .imageUrl(post.getImageUrl())
+                .memo(post.getMemo())
                 .build();
     }
 

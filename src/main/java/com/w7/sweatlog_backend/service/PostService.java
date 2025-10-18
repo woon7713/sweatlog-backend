@@ -34,6 +34,8 @@ public class PostService {
                 .category(request.getCategory())
                 .name(request.getName())
                 .user(currentUser)
+                .memo(request.getMemo())
+                .imageUrl(request.getImageUrl())
                 .build();
 
         // 카테고리 별 필드 세팅 -> 웨이트 트레이닝: 중량, 횟수 / 필라세트 요가 유산소 운동시간 표시
@@ -73,7 +75,7 @@ public class PostService {
             PostResponse response = PostResponse.from(post);
             //Like 갯수
             //Like 여부
-            //메모 갯수
+            //댓글 갯수
             return response;
         });
     }
@@ -116,6 +118,7 @@ public class PostService {
         post.setStartTime(request.getStartTime());
         post.setEndTime(request.getEndTime());
         post.setCategory(request.getCategory());
+        post.setMemo(request.getMemo());
         post.setImageUrl(request.getImageUrl());
 
         //카테고리별 수정

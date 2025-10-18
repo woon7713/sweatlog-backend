@@ -1,9 +1,6 @@
 
 package com.w7.sweatlog_backend.entity;
 
-import com.w7.sweatlog_backend.entity.Comment;
-import com.w7.sweatlog_backend.entity.Like;
-import com.w7.sweatlog_backend.entity.Post;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -76,7 +73,7 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @Builder.Default
-    private Set<Comment> Comments = new HashSet<>();
+    private Set<Comment> comments = new HashSet<>();
 
     @PrePersist
     protected void onCreate() { enabled = true; }

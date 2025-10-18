@@ -51,9 +51,6 @@ public class PostController {
     }
 
 
-
-
-
     //운동 기록 수정
     @PutMapping("/{postId}")
     public ResponseEntity<PostResponse> updatePost(
@@ -63,6 +60,7 @@ public class PostController {
         PostResponse response = postService.updatePost(postId, request);
         return ResponseEntity.ok(response);
     }
+
     //운동 기록 삭제
     @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(@PathVariable Long postId) {

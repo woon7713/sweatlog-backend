@@ -44,7 +44,6 @@ public class Post {
     @Column(name = "name", columnDefinition = "TEXT", nullable = false)
     private String name; // 운동 이름
 
-
     @Column(name = "weight")
     private Double weight; // kg (웨이트 전용)
 
@@ -54,10 +53,11 @@ public class Post {
     @Column(name = "duration")
     private Integer duration; // 운동 시간 (요가, 필라테스, 유산소 전용)
 
-
-
     @Column(name = "image_url", columnDefinition = "TEXT")
-    private String imageUrl;  // 운동 이미지 URL
+    private String imageUrl;  // 운동 인증 이미지 URL
+
+    @Column(name="memo")
+    private String memo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -73,9 +73,9 @@ public class Post {
     private LocalDateTime createdAt;
 
 
-//    @UpdateTimestamp
-//    @Column(name = "_at")
-//    private LocalDateTime updatedAt;
+    @UpdateTimestamp
+    @Column(name = "_at")
+    private LocalDateTime updatedAt;
 
 //    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
 //    @Builder.Default
@@ -83,5 +83,5 @@ public class Post {
 
 //    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
 //    @Builder.Default
-//    private Set<Comment> Comments = new HashSet<>();
+//    private Set<Comment> comments = new HashSet<>();
 }
