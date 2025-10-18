@@ -1,7 +1,7 @@
 package com.w7.sweatlog_backend.service;
 
 import com.w7.sweatlog_backend.dto.*;
-import com.w7.sweatlog_backend.entity.AuthProvider;
+import com.w7.sweatlog_backend.entity.enums.AuthProvider;
 import com.w7.sweatlog_backend.entity.User;
 import com.w7.sweatlog_backend.entity.UserDto;
 import com.w7.sweatlog_backend.exception.AuthenticationException;

@@ -1,9 +1,10 @@
 
 package com.w7.sweatlog_backend.entity;
 
-import com.w7.sweatlog_backend.entity.Comment;
-import com.w7.sweatlog_backend.entity.Like;
-import com.w7.sweatlog_backend.entity.Post;
+import com.w7.sweatlog_backend.entity.enums.ActivityLevel;
+import com.w7.sweatlog_backend.entity.enums.AuthProvider;
+import com.w7.sweatlog_backend.entity.enums.ExperienceLevel;
+import com.w7.sweatlog_backend.entity.enums.Gender;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +16,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
@@ -30,6 +33,7 @@ import java.util.Set;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
     @Column(unique = true, nullable = false)
@@ -43,6 +47,19 @@ public class User implements UserDetails {
 
     @Column(name = "full_name")
     private String fullName;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    @Column(name = "birth_date")
+    private LocalDate birthDate;
+
+    @Column(name = "height_cm")
+    private Integer heightCm;
+
+    @Column(name = "weight_kg", precision = 5, scale = 2)
+    private BigDecimal weightKg;
+
 
     private String bio;
 
@@ -89,6 +106,19 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() { return enabled; }
+
+    @Enumerated(EnumType.STRING)
+    private ExperienceLevel experienceLevel;
+
+    @Enumerated(EnumType.STRING)
+    private ActivityLevel activityLevel;
+
+    @ManyToMany
+    @JoinTable(name = "user_preferred_workout",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "workout_id"))
+    @Builder.Default
+    private Set<WorkoutCode> preferredWorkouts = new HashSet<>();
 
 
 
