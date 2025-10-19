@@ -1,9 +1,10 @@
 package com.w7.sweatlog_backend.service;
-
+import com.w7.sweatlog_backend.dto.PostDetailRequest;
 import com.w7.sweatlog_backend.dto.PostRequest;
 import com.w7.sweatlog_backend.dto.PostResponse;
-import com.w7.sweatlog_backend.entity.ExerciseCategory;
+import com.w7.sweatlog_backend.entity.enums.ExerciseCategory;
 import com.w7.sweatlog_backend.entity.Post;
+import com.w7.sweatlog_backend.entity.PostDetail;
 import com.w7.sweatlog_backend.entity.User;
 import com.w7.sweatlog_backend.exception.ResourceNotFoundException;
 import com.w7.sweatlog_backend.exception.UnauthorizedException;
@@ -15,14 +16,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PostService {
 
     private final PostRepository postRepository;
     private final UserService userService;
-
-    //운동 기록 생성
+    /**
+     * 운동 기록 생성
+     */
     public PostResponse createPost(PostRequest request) {
 
         User currentUser = userService.getCurrentUser();
@@ -32,28 +36,28 @@ public class PostService {
                 .startTime(request.getStartTime())
                 .endTime(request.getEndTime())
                 .category(request.getCategory())
-                .name(request.getName())
                 .user(currentUser)
                 .memo(request.getMemo())
-                .imageUrl(request.getImageUrl())
+                .imageUrl(request.getImageUrl())  // 운동기록 이미지 URL 생성
                 .build();
 
-        // 카테고리 별 필드 세팅 -> 웨이트 트레이닝: 중량, 횟수 / 필라세트 요가 유산소 운동시간 표시
-        if (request.getCategory() == ExerciseCategory.WEIGHT_TRAINING) {
-            post.setWeight(request.getWeight());
-            post.setReps(request.getReps());
-        } else {
-            post.setDuration(request.getDuration());
+        // PostDetail 생성 및 Post에 연결
+        List<PostDetailRequest> detailRequests = request.getDetails();
+
+        if (detailRequests != null) {
+            for (PostDetailRequest req : detailRequests) {
+                PostDetail detail = createPostDetail(post, request.getCategory(), req);
+                post.addDetail(detail);
+            }
         }
 
         Post savedPost = postRepository.save(post);
-
         return PostResponse.from(savedPost);
     }
 
-
-
-    //게시글 전체 조회
+    /**
+     * 운동 기록 전체 조회
+     */
     @Transactional(readOnly = true)
     public Page<PostResponse> getPosts(Pageable pageable) {
         User currentUser = userService.getCurrentUser();
@@ -67,6 +71,9 @@ public class PostService {
         });
     }
 
+    /**
+     * 단일 사용자 운동 기록 조회
+     */
     @Transactional(readOnly = true)
     public Page<PostResponse> getUserPosts(Long userId, Pageable pageable) {
         User currentUser = userService.getCurrentUser();
@@ -80,13 +87,15 @@ public class PostService {
         });
     }
 
-    // 운동 기록 삭제 (soft delete)
+    /**
+     * 운동 기록 삭제
+     */
     public void deletePost(Long postId) {
         //인증된 유저확인
         User currentUser = userService.getCurrentUser();
 
         //운동 기록 확인
-        Post post = postRepository.findByIdAndNotDeleted(postId)
+        Post post = postRepository.findByIdAndDeletedFalse(postId)
                 .orElseThrow(()->new ResourceNotFoundException("Post not found"));
 
         // 권한 확인
@@ -97,7 +106,9 @@ public class PostService {
         postRepository.save(post);
     }
 
-    // 운동 기록  수정
+    /**
+     * 운동 기록 수정
+     */
     public PostResponse updatePost(Long postId, PostRequest request) {
 
         //인증된 유저확인
@@ -112,8 +123,7 @@ public class PostService {
             throw new UnauthorizedException("You are not authorized to update this post");
         }
 
-        //운동 기록 수정
-        post.setName(request.getName());
+        //기존 필드 업데이트
         post.setDate(request.getDate());
         post.setStartTime(request.getStartTime());
         post.setEndTime(request.getEndTime());
@@ -121,20 +131,48 @@ public class PostService {
         post.setMemo(request.getMemo());
         post.setImageUrl(request.getImageUrl());
 
-        //카테고리별 수정
-        if (request.getCategory() == ExerciseCategory.WEIGHT_TRAINING) {
-            post.setWeight(request.getWeight());
-            post.setReps(request.getReps());
-            post.setDuration(null);
-        } else {
-            post.setDuration(request.getDuration());
-            post.setWeight(null);
-            post.setReps(null);
+        // 이미지 URL 수정
+        if (request.getImageUrl() != null) {
+            post.setImageUrl(request.getImageUrl());
+        }
+
+        //  PostDetail 리스트 업데이트 (기존 삭제 후 덮어쓰기 전략)
+        post.getDetails().clear();
+
+        List<PostDetailRequest> detailRequests = request.getDetails();
+
+        if (detailRequests != null) {
+            for (PostDetailRequest req : detailRequests) {
+                PostDetail detail = createPostDetail(post, request.getCategory(), req);
+                post.addDetail(detail);
+            }
         }
 
         //저장 후 반환
         Post updatedPost = postRepository.save(post);
         return PostResponse.from(updatedPost);
+    }
+
+
+    /**
+     * 카테고리별 필드 설정
+     */
+    private PostDetail createPostDetail(Post post, ExerciseCategory category, PostDetailRequest req) {
+        PostDetail detail = PostDetail.builder()
+                .name(req.getName())
+                .post(post)
+                .build();
+
+        if (category == ExerciseCategory.WEIGHT_TRAINING) {
+            // 웨이트 트레이닝일 경우
+            detail.setWeight(req.getWeight());
+            detail.setReps(req.getReps());
+            detail.setSets(req.getSets());
+        } else {
+            // 유산소/기타 운동일 경우 (Duration 사용)
+            detail.setDuration(req.getDuration());
+        }
+        return detail;
     }
 
 }

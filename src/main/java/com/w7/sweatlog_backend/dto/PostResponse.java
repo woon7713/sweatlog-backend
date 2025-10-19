@@ -1,7 +1,8 @@
 package com.w7.sweatlog_backend.dto;
 
-import com.w7.sweatlog_backend.entity.ExerciseCategory;
+import com.w7.sweatlog_backend.entity.enums.ExerciseCategory;
 import com.w7.sweatlog_backend.entity.Post;
+import com.w7.sweatlog_backend.entity.PostDetail;
 import com.w7.sweatlog_backend.entity.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +10,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-
-import static com.w7.sweatlog_backend.entity.Post.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -25,17 +25,22 @@ public class PostResponse {
     private LocalTime startTime;
     private LocalTime endTime;
     private ExerciseCategory category;
-    private String name;
-    private Double weight;
-    private Integer reps;
     private UserDto user; //사용자 정보
-    private Integer duration;
     private String memo;
     private String imageUrl;
+    private List<PostDetailResponse> details;
 
 
 
     public static PostResponse from(Post post) {
+
+        List<PostDetailResponse> detailResponses = new ArrayList<>();
+
+        //Post 에 PostDetail을 순회하며  PostResponse DTO로 변환
+        for (PostDetail detail : post.getDetails()) {
+            PostDetailResponse detailResponse = PostDetailResponse.from(detail);
+            detailResponses.add(detailResponse);
+        }
 
         return PostResponse.builder()
                 .id(post.getId())
@@ -43,13 +48,10 @@ public class PostResponse {
                 .startTime(post.getStartTime())
                 .endTime(post.getEndTime())
                 .category(post.getCategory())
-                .name(post.getName())
-                .weight(post.getWeight())
-                .reps(post.getReps())
-                .duration(post.getDuration())
                 .user(UserDto.from(post.getUser()))
                 .imageUrl(post.getImageUrl())
                 .memo(post.getMemo())
+                .details(detailResponses)
                 .build();
     }
 

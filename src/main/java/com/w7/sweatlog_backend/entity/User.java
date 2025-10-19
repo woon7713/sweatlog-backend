@@ -1,6 +1,7 @@
 
 package com.w7.sweatlog_backend.entity;
 
+import com.w7.sweatlog_backend.entity.enums.AuthProvider;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

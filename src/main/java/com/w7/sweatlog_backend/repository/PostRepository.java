@@ -12,20 +12,15 @@ import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post,Long> {
 
-    Page<Post> findByUserId(Long userId, Pageable pageable);
-    Long countByUserId(Long userId);
 
-    //삭제되지않은 포스트 조회
-    @EntityGraph(attributePaths = {"user"})
-    @Query("SELECT p FROM Post p WHERE p.deleted = false ORDER BY p.createdAt DESC")
+    // 삭제되지 않은 전체 게시물 조회
+    @Query("SELECT p FROM Post p JOIN FETCH p.details pd JOIN FETCH p.user u WHERE p.deleted = false ORDER BY p.id DESC")
     Page<Post> findAllActive(Pageable pageable);
 
-    //삭제되지않은 postId를 통해 post조회
-    @Query("SELECT p FROM Post p WHERE p.id = :id AND p.deleted = false")
-    Optional<Post> findByIdAndNotDeleted(@Param("id") Long id);
-
-    //삭제되지않은 UserId를 통한 post 조회
-    @EntityGraph(attributePaths = {"user"})
-    @Query("SELECT p FROM Post p WHERE p.user.id = :userId AND p.deleted = false ORDER BY p.createdAt DESC")
+    //  단일 사용자의 삭제되지않은 게시물 조회
+    @Query("SELECT p FROM Post p JOIN FETCH p.details pd JOIN FETCH p.user u WHERE p.user.id = :userId AND p.deleted = false ORDER BY p.id DESC")
     Page<Post> findByUserIdAndNotDeleted(@Param("userId") Long userId, Pageable pageable);
+
+    // 단일 게시물 조회
+    Optional<Post> findByIdAndDeletedFalse(Long postId);
 }
