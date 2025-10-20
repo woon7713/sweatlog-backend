@@ -95,6 +95,10 @@ public class User implements UserDetails {
     @Builder.Default
     private Set<Comment> Comments = new HashSet<>();
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<Routine> routines = new HashSet<>();
+
     @PrePersist
     protected void onCreate() { enabled = true; }
 
