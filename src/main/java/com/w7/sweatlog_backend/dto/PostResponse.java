@@ -29,8 +29,8 @@ public class PostResponse {
     private String memo;
     private String imageUrl;
     private List<PostDetailResponse> details;
-
-
+    private boolean isLiked;
+    private Long LikeCount;
     private Long CommentCount;
 
 
