@@ -31,6 +31,8 @@ public class PostResponse {
     private List<PostDetailResponse> details;
 
 
+    private Long CommentCount;
+
 
     public static PostResponse from(Post post) {
 
