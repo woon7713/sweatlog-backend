@@ -2,6 +2,7 @@ package com.w7.sweatlog_backend.controller;
 
 import com.w7.sweatlog_backend.dto.PostRequest;
 import com.w7.sweatlog_backend.dto.PostResponse;
+import com.w7.sweatlog_backend.service.LikeService;
 import com.w7.sweatlog_backend.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,12 +13,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/posts")
 @RequiredArgsConstructor
 public class PostController {
 
     private final PostService postService;
+    private final LikeService likeService;
 
 
     //기록 생성
@@ -67,6 +71,16 @@ public class PostController {
 
         postService.deletePost(postId);
         return ResponseEntity.noContent().build();
+    }
 
+    @PostMapping("{postId}/like")
+    public ResponseEntity<?> toggleLike(@PathVariable Long postId) {
+        boolean isLiked = likeService.toggleLike(postId);
+        Long likeCount = likeService.getLikeCount(postId);
+
+        return ResponseEntity.ok().body(Map.of(
+                "isLiked", isLiked,
+                "likeCount", likeCount
+        ));
     }
 }

@@ -8,6 +8,8 @@ import com.w7.sweatlog_backend.entity.PostDetail;
 import com.w7.sweatlog_backend.entity.User;
 import com.w7.sweatlog_backend.exception.ResourceNotFoundException;
 import com.w7.sweatlog_backend.exception.UnauthorizedException;
+import com.w7.sweatlog_backend.repository.CommentRepository;
+import com.w7.sweatlog_backend.repository.LikeRepository;
 import com.w7.sweatlog_backend.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,6 +26,8 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserService userService;
+    private final LikeRepository likeRepository;
+    private final CommentRepository commentRepository;
     /**
      * 운동 기록 생성
      */
@@ -64,9 +68,15 @@ public class PostService {
         Page<Post> posts = postRepository.findAllActive(pageable);
         return posts.map(post -> {
             PostResponse response = PostResponse.from(post);
-            //Like 갯수
-            //Like 여부
-            //메모 갯수
+
+            boolean isLiked = likeRepository.existsByUserAndPost(currentUser, post);  //좋아요여부
+            Long likeCount = likeRepository.countByPostId(post.getId());              //좋아요 개수
+            Long commentCount = commentRepository.countByPostId(post.getId());        //댓글 개수
+
+            response.setLiked(isLiked);
+            response.setCommentCount(commentCount);
+            response.setLikeCount(likeCount);
+
             return response;
         });
     }
@@ -80,9 +90,14 @@ public class PostService {
         Page<Post> posts = postRepository.findByUserIdAndNotDeleted(userId, pageable);
         return posts.map(post -> {
             PostResponse response = PostResponse.from(post);
-            //Like 갯수
-            //Like 여부
-            //댓글 갯수
+
+            boolean isLiked = likeRepository.existsByUserAndPost(currentUser, post);  //좋아요여부
+            Long likeCount = likeRepository.countByPostId(post.getId());              //좋아요 개수
+            Long commentCount = commentRepository.countByPostId(post.getId());        //댓글 개수
+
+            response.setLiked(isLiked);
+            response.setCommentCount(commentCount);
+            response.setLikeCount(likeCount);
             return response;
         });
     }
