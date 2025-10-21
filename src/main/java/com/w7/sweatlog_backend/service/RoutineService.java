@@ -1,7 +1,6 @@
 package com.w7.sweatlog_backend.service;
 
 import com.w7.sweatlog_backend.dto.*;
-import com.w7.sweatlog_backend.entity.Post;
 import com.w7.sweatlog_backend.entity.Routine;
 import com.w7.sweatlog_backend.entity.RoutineDetail;
 import com.w7.sweatlog_backend.entity.User;
