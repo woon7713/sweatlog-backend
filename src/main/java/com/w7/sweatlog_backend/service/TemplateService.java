@@ -6,6 +6,9 @@ import com.w7.sweatlog_backend.exception.ResourceNotFoundException;
 import com.w7.sweatlog_backend.exception.UnauthorizedException;
 import com.w7.sweatlog_backend.repository.TemplateRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
@@ -20,6 +23,9 @@ public class TemplateService {
 
     private final  TemplateRepository templateRepository;
     private final UserService userService;
+
+    @Value("${app.template.public-user-id}")
+    private Long publicUserId;
 
 
     //템플릿 생성
@@ -55,9 +61,16 @@ public class TemplateService {
     }
 
     //템플릿 전체 출력 -> 모든 사용자에게 출력
-    public List<Template> findAllTemplates() {
+    public Page<TemplateResponse> findAllTemplates(Pageable pageable) {
 
-        return templateRepository.findAll();
+        User currentUser = userService.getCurrentUser();
+
+        Page<Template> templates = templateRepository.findByUserIdOrUserId(publicUserId, currentUser.getId(), pageable);
+
+        return templates.map(TemplateResponse::from);
+
+
+
     }
 
     //템플릿 수정

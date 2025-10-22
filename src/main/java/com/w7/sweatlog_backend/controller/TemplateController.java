@@ -6,6 +6,9 @@ import com.w7.sweatlog_backend.service.RoutineService;
 import com.w7.sweatlog_backend.service.TemplateService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,12 +31,19 @@ public class TemplateController {
     }
 
 
-    //템플릿 출력
+    //나의 템플릿 출력
     @GetMapping
-    public ResponseEntity<List<Template>> getAllTemplate() {
-        List<Template> templates = templateService.findAllTemplates();
+    public ResponseEntity<Page<TemplateResponse>> getMyTemplate(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<TemplateResponse> templates = templateService.findAllTemplates(pageable);
         return ResponseEntity.ok(templates);
+
     }
+
+
 
     //루틴 수정
     @PutMapping("/{templateId}")
