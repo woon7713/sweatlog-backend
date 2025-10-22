@@ -46,3 +46,6 @@ local.properties
 # OS
 .DS_Store
 Thumbs.db
+
+# 임시 패키지 및 파일
+/src/main/java/com/w7/sweatlog_backend/temp/

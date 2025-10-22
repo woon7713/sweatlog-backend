@@ -31,6 +31,9 @@ public class Post {
     private Long id;
 
     @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false)
     private LocalDate date;
 
     @Column(nullable = false)
