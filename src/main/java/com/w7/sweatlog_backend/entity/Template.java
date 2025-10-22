@@ -1,44 +1,34 @@
 package com.w7.sweatlog_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.w7.sweatlog_backend.entity.enums.Day;
-import com.w7.sweatlog_backend.entity.enums.ExerciseCategory;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
-@Table(name = "routines")
+@Table(name= "templates")
 @Builder
 @NoArgsConstructor
+@Data
 @AllArgsConstructor
-public class Routine {
+public class Template {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_id" , nullable = false)
-    private User user;
-
-    @OneToMany(mappedBy = "routine", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @Builder.Default
-    private List<RoutineDetail> details = new ArrayList<>();
-
-
-    @Column(name="routine_name")
-    private String routineName;             //루틴 이름
+    @Column
+    private String purposeName; // 템플릿 목적 이름
 
     @CreationTimestamp
     @Column(name ="created_at" , updatable = false)
@@ -48,11 +38,24 @@ public class Routine {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @OneToMany(mappedBy = "template", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference           //무한참조방지
+    @Builder.Default
+    private List<TemplateDetail> details = new ArrayList<>();
+
+    @JsonBackReference              //무한참조 방지
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id" , nullable = false)
+    private User user;
 
     // 연관 관계 편의 메서드
-    public void addDetail(RoutineDetail detail) {
+    public void addDetail(TemplateDetail detail) {
         this.details.add(detail);
-        detail.setRoutine(this);
+        detail.setTemplate(this);
     }
+
+
+
+
 
 }
