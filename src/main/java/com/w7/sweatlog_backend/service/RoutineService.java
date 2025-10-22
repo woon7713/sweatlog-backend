@@ -27,15 +27,9 @@ public class RoutineService {
 
         User currentUser = userService.getCurrentUser();
 
-        //중복된 요일에 대한 에러처리
-        if (routineRepository.existsByUserAndDay(currentUser, request.getDay())) {
-            throw new IllegalArgumentException("이미 해당 요일의 루틴이 존재합니다. 수정을 이용해 주세요.");
-        }
-
-
         Routine routine = Routine.builder()
                 .user(currentUser)
-                .day(request.getDay())
+                .routineName(request.getRoutineName())
                 .build();
 
         // RoutineDetail 생성
@@ -59,15 +53,12 @@ public class RoutineService {
 
                 Routine updatedRoutine = routineRepository.save(routine);
                 return RoutineResponse.from(updatedRoutine);
-
-
-
-
     }
 
 
+    //나의 루틴이니까 내 루틴만 볼수 있게 설정
     @Transactional(readOnly = true)
-    public Page<RoutineResponse> getRoutines(Pageable pageable) {
+    public Page<RoutineResponse> getMyRoutines(Pageable pageable) {
         User currentUser = userService.getCurrentUser();
         Page<Routine> routines = routineRepository.findByUser(currentUser, pageable);
         return routines.map(RoutineResponse::from);
@@ -84,7 +75,7 @@ public class RoutineService {
         // RoutineDetail 초기화
         routine.getDetails().clear();
 
-        routine.setDay(request.getDay());
+        routine.setRoutineName(request.getRoutineName());
 
         // 새로운 RoutineDetail 생성 및 수정
         List<RoutineDetailRequest> detailRequests = request.getDetails();
@@ -116,7 +107,7 @@ public class RoutineService {
                         .orElseThrow(() -> new ResourceNotFoundException("Routine not found"));
                 //권한 확인
                 if (!routine.getUser().getId().equals(currentUser.getId())) {
-                    throw new UnauthorizedException("루틴을 삭제할 권한이 없습니다.");
+                    throw new UnauthorizedException("You are not authorized to delete this routine");
                 }
 
                 routineRepository.delete(routine);

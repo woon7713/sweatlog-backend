@@ -13,6 +13,4 @@ public interface RoutineRepository extends JpaRepository<Routine, Long> {
 
     Page<Routine> findByUser(User user, Pageable pageable);
 
-    //요일 중복 확인
-    Boolean existsByUserAndDay(User user, Day day);
 }

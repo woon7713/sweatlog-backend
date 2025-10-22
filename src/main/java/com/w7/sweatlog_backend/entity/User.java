@@ -1,6 +1,7 @@
 
 package com.w7.sweatlog_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.w7.sweatlog_backend.entity.enums.ActivityLevel;
 import com.w7.sweatlog_backend.entity.enums.AuthProvider;
 import com.w7.sweatlog_backend.entity.enums.ExperienceLevel;
@@ -10,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
@@ -98,6 +100,11 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @Builder.Default
     private Set<Routine> routines = new HashSet<>();
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<Template> templates = new HashSet<>();
 
     @PrePersist
     protected void onCreate() { enabled = true; }
