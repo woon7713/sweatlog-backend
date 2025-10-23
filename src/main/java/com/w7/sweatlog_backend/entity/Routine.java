@@ -37,8 +37,10 @@ public class Routine {
     private List<RoutineDetail> details = new ArrayList<>();
 
 
-    @Column(name="routine_name")
-    private String routineName;             //루틴 이름
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Day day;
+
 
     @CreationTimestamp
     @Column(name ="created_at" , updatable = false)

@@ -27,16 +27,18 @@ public class RoutineController {
         return ResponseEntity.ok(response);
     }
 
-//나의 루틴 전체 조회
+//루틴 전체 조회
     @GetMapping
-    public ResponseEntity<Page<RoutineResponse>> getMyRoutines(
+    public ResponseEntity<Page<RoutineResponse>> getAllRoutines(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<RoutineResponse> posts = routineService.getMyRoutines(pageable);
+        Page<RoutineResponse> posts = routineService.getRoutines(pageable);
         return ResponseEntity.ok(posts);
     }
+
+
 
     //루틴 수정
     @PutMapping("/{routineId}")

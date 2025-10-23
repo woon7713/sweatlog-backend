@@ -115,7 +115,7 @@ public class PostService {
 
         // 권한 확인
         if (!post.getUser().getId().equals(currentUser.getId())) {
-            throw new UnauthorizedException("You are not authorized to delete this post");
+            throw new UnauthorizedException("게시물을 삭제할 권한이 없습니다");
         }
         post.setDeleted(true);
         postRepository.save(post);
