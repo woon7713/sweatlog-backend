@@ -23,10 +23,10 @@ public class RoutineResponse {
     private Long id;
     private UserDto user;
     private List<RoutineDetailResponse> details;
-    private String routineName;
+    private Day day;
+
     private LocalDateTime createAt;
     private LocalDateTime updatedAt;
-
 
     public static RoutineResponse from(Routine routine) {
 
@@ -40,11 +40,17 @@ public class RoutineResponse {
 
         return RoutineResponse.builder()
                 .id(routine.getId())
-                .routineName(routine.getRoutineName())
+                .day(routine.getDay())
                 .createAt(routine.getCreatedAt())
                 .updatedAt(routine.getUpdatedAt())
                 .user(UserDto.from(routine.getUser()))
                 .details(detailResponses)
                 .build();
+
+
+
+
     }
+
+
 }

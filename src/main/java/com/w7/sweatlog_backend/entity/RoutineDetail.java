@@ -26,7 +26,7 @@ public class RoutineDetail {
     private Integer orderNumber; // 운동 순서
 
     @Column(name = "name", updatable = false)
-    private String name;        //운동 이름
+    private String name;
 
     @Column(name = "set")
     private Integer set;
