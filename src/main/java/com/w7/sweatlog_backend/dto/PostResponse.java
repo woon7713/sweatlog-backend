@@ -21,6 +21,7 @@ import java.util.List;
 public class PostResponse {
 
     private Long id;
+    private String title;
     private LocalDate date;
     private LocalTime startTime;
     private LocalTime endTime;
@@ -46,6 +47,7 @@ public class PostResponse {
 
         return PostResponse.builder()
                 .id(post.getId())
+                .title(post.getTitle())
                 .date(post.getDate())
                 .startTime(post.getStartTime())
                 .endTime(post.getEndTime())
