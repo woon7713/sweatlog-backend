@@ -36,6 +36,7 @@ public class PostService {
         User currentUser = userService.getCurrentUser();
 
         Post post = Post.builder()
+                .title(request.getTitle())
                 .date(request.getDate())
                 .startTime(request.getStartTime())
                 .endTime(request.getEndTime())
@@ -139,6 +140,7 @@ public class PostService {
         }
 
         //기존 필드 업데이트
+        post.setTitle(request.getTitle());
         post.setDate(request.getDate());
         post.setStartTime(request.getStartTime());
         post.setEndTime(request.getEndTime());
