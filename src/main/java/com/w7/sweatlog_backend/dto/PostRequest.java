@@ -1,6 +1,7 @@
 package com.w7.sweatlog_backend.dto;
 
 import com.w7.sweatlog_backend.entity.enums.ExerciseCategory;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -14,6 +15,9 @@ public class PostRequest {
 
     @NotNull(message = "운동 날짜를 선택해주세요.")
     private LocalDate date;
+
+    @NotBlank(message = "제목은 필수입니다.")
+    private String title;
 
     private LocalTime startTime;
 

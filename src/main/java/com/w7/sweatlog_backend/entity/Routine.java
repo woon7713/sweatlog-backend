@@ -1,13 +1,10 @@
 package com.w7.sweatlog_backend.entity;
 
-import com.w7.sweatlog_backend.entity.enums.Day;
-import com.w7.sweatlog_backend.entity.enums.ExerciseCategory;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -47,7 +44,6 @@ public class Routine {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
 
     // 연관 관계 편의 메서드
     public void addDetail(RoutineDetail detail) {
