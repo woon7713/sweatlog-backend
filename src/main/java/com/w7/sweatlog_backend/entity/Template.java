@@ -2,7 +2,6 @@ package com.w7.sweatlog_backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.w7.sweatlog_backend.entity.enums.Day;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -4,7 +4,6 @@ import com.w7.sweatlog_backend.entity.PostDetail;
 import com.w7.sweatlog_backend.entity.Routine;
 import com.w7.sweatlog_backend.entity.RoutineDetail;
 import com.w7.sweatlog_backend.entity.UserDto;
-import com.w7.sweatlog_backend.entity.enums.Day;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
