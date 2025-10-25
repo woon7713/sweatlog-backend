@@ -1,7 +1,6 @@
 package com.w7.sweatlog_backend.dto;
 
 import com.w7.sweatlog_backend.entity.Routine;
-import com.w7.sweatlog_backend.entity.enums.Day;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;

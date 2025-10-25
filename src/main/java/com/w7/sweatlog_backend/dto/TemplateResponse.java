@@ -1,7 +1,7 @@
 package com.w7.sweatlog_backend.dto;
 
 import com.w7.sweatlog_backend.entity.*;
-import com.w7.sweatlog_backend.entity.enums.Day;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
