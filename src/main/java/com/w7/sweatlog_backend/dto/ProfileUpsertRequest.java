@@ -33,4 +33,7 @@ public class ProfileUpsertRequest {
     private Integer heightCm;
     private BigDecimal weightKg;
 
+    private String fullName;
+    private String bio;
+
 }

@@ -10,6 +10,9 @@ import com.w7.sweatlog_backend.repository.GoalRepository;
 import com.w7.sweatlog_backend.repository.UserRepository;
 import com.w7.sweatlog_backend.repository.WorkoutCodeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +41,9 @@ public class ProfileService {
         if (req.getHeightCm() != null)   me.setHeightCm(req.getHeightCm());
         if (req.getWeightKg() != null)   me.setWeightKg(req.getWeightKg());
 
+        if (req.getFullName() != null) me.setFullName(req.getFullName());
+        if (req.getBio()      != null) me.setBio(req.getBio());
+
         // 2) 선호 운동
         if (req.getPreferredWorkoutIds() != null) {
             List<WorkoutCode> codes = workoutCodeRepository.findAllById(req.getPreferredWorkoutIds());
@@ -49,20 +55,29 @@ public class ProfileService {
         }
 
         GoalResponseDto created = null;
-        userRepository.save(me);
+        //userRepository.save(me);
+
+        User updatedUser = userRepository.save(me);
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                updatedUser,
+                updatedUser.getPassword(),
+                updatedUser.getAuthorities()
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         List<Long> preferredIds = me.getPreferredWorkouts().stream()
                 .map(WorkoutCode::getId).toList();
 
         return ProfileResponse.builder()
-                .userId(me.getId())
-                .experienceLevel(me.getExperienceLevel())
-                .activityLevel(me.getActivityLevel())
+                .userId(updatedUser.getId())
+                .experienceLevel(updatedUser.getExperienceLevel())
+                .activityLevel(updatedUser.getActivityLevel())
                 .preferredWorkoutIds(preferredIds)
-                .gender(me.getGender())
-                .birthDate(me.getBirthDate())
-                .heightCm(me.getHeightCm())
-                .weightKg(me.getWeightKg())
+                .gender(updatedUser.getGender())
+                .birthDate(updatedUser.getBirthDate())
+                .heightCm(updatedUser.getHeightCm())
+                .weightKg(updatedUser.getWeightKg())
                 .createdGoal(created)
                 .build();
     }
